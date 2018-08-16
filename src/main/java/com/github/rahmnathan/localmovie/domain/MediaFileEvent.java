@@ -59,4 +59,15 @@ public class MediaFileEvent {
     public LocalDateTime getTimestamp() {
         return timestamp;
     }
+
+    @Override
+    public String toString() {
+        return "MediaFileEvent{" +
+                "id=" + id +
+                ", timestamp=" + timestamp +
+                ", relativePath='" + relativePath + '\'' +
+                ", event='" + event + '\'' +
+                ", mediaFile=" + mediaFile +
+                '}';
+    }
 }
