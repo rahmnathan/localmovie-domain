@@ -16,7 +16,7 @@ public class MediaFileEvent {
     private String relativePath;
     private String event;
     @JoinColumn
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private MediaFile mediaFile;
 
     public MediaFileEvent() {
