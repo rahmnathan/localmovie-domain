@@ -3,9 +3,7 @@ package com.github.rahmnathan.localmovie.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.rahmnathan.omdb.data.Movie;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Version;
+import javax.persistence.*;
 import java.util.Calendar;
 
 @Entity(name = "movies")
@@ -26,11 +24,15 @@ public class MediaFile {
         this.movie = movie;
         this.fileName = fileName;
         this.views = views;
-        created = Calendar.getInstance().getTimeInMillis();
     }
 
     public MediaFile(){
         // Default constructor
+    }
+
+    @PrePersist
+    public void setTimeStamp(){
+        created = Calendar.getInstance().getTimeInMillis();
     }
 
     public String getFileName() {

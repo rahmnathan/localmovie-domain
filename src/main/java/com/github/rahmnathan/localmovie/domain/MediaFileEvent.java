@@ -11,8 +11,7 @@ public class MediaFileEvent {
     @GeneratedValue
     @JsonIgnore
     private Long id;
-    @JsonIgnore
-    private final LocalDateTime timestamp = LocalDateTime.now();
+    private LocalDateTime timestamp;
     private String relativePath;
     private String event;
     @JoinColumn
@@ -20,6 +19,11 @@ public class MediaFileEvent {
     private MediaFile mediaFile;
 
     public MediaFileEvent() {
+    }
+
+    @PrePersist
+    public void setTimestamp(){
+        this.timestamp = LocalDateTime.now();
     }
 
     public MediaFileEvent(String event, MediaFile mediaFile, String relativePath) {
