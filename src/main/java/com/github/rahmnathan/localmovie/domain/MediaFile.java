@@ -65,7 +65,11 @@ public class MediaFile {
 
     @Override
     public String toString(){
-        return movie.getTitle();
+        if(movie != null) {
+            return movie.getTitle();
+        }
+
+        return fileName;
     }
 
     public static class Builder {
