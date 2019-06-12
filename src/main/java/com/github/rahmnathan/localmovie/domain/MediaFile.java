@@ -1,12 +1,12 @@
 package com.github.rahmnathan.localmovie.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.github.rahmnathan.omdb.data.Movie;
+import com.github.rahmnathan.omdb.data.Media;
 
 import javax.persistence.*;
 import java.util.Calendar;
 
-@Entity(name = "movies")
+@Entity(name = "media")
 public class MediaFile {
 
     @Id
@@ -14,14 +14,14 @@ public class MediaFile {
     private String fileName;
     private long created;
     private int views;
-    private Movie movie;
+    private Media media;
     @Version
     @JsonIgnore
     private long version;
 
-    private MediaFile(String path, Movie movie, int views, String fileName) {
+    private MediaFile(String path, Media media, int views, String fileName) {
         this.path = path;
-        this.movie = movie;
+        this.media = media;
         this.fileName = fileName;
         this.views = views;
     }
@@ -55,18 +55,18 @@ public class MediaFile {
         return created;
     }
 
-    public Movie getMovie() {
-        return movie;
+    public Media getMedia() {
+        return media;
     }
 
-    public void setMovie(Movie movie){
-        this.movie = movie;
+    public void setMedia(Media media){
+        this.media = media;
     }
 
     @Override
     public String toString(){
-        if(movie != null) {
-            return movie.getTitle();
+        if(media != null) {
+            return media.getTitle();
         }
 
         return fileName;
@@ -76,7 +76,7 @@ public class MediaFile {
         private String fileName;
         private String path;
         private int views;
-        private Movie movieInfo;
+        private Media media;
 
         public static Builder newInstance(){
             return new Builder();
@@ -87,8 +87,8 @@ public class MediaFile {
             return this;
         }
 
-        public Builder setMovie(Movie movie) {
-            this.movieInfo = movie;
+        public Builder setMedia(Media media) {
+            this.media = media;
             return this;
         }
 
@@ -103,20 +103,20 @@ public class MediaFile {
         }
 
         public MediaFile build(){
-            return new MediaFile(path, movieInfo, views, fileName);
+            return new MediaFile(path, media, views, fileName);
         }
 
-        public static MediaFile copyWithNewTitle(MediaFile mediaFile, String fileName, String title, String path){
+        public static MediaFile copyWithNewTitle(MediaFile mediaFile, String fileName, String title, String path, Integer number){
             if(mediaFile == null)
                 return Builder.newInstance()
                         .setFileName(fileName)
                         .setPath(path)
-                        .setMovie(Movie.Builder.newInstance().setTitle(title).build())
+                        .setMedia(Media.Builder.newInstance().setNumber(number).setTitle(title).build())
                         .build();
 
             return Builder.newInstance()
                     .setFileName(fileName)
-                    .setMovie(Movie.Builder.copyWithNewTitle(mediaFile.getMovie(), title))
+                    .setMedia(Media.Builder.copyWithNewTitle(mediaFile.getMedia(), title, number))
                     .setPath(path)
                     .build();
         }
@@ -127,7 +127,7 @@ public class MediaFile {
 
             return Builder.newInstance()
                     .setFileName(mediaFile.getFileName())
-                    .setMovie(Movie.Builder.copyWithNoImage(mediaFile.getMovie()))
+                    .setMedia(Media.Builder.copyWithNoImage(mediaFile.getMedia()))
                     .setViews(mediaFile.getViews())
                     .setPath(mediaFile.getPath())
                     .build();
