@@ -2,8 +2,10 @@ package com.github.rahmnathan.localmovie.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.rahmnathan.omdb.data.Media;
+import com.github.rahmnathan.omdb.data.MediaType;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 
 @Entity(name = "media")
@@ -13,6 +15,7 @@ public class MediaFile {
     private String path;
     private String fileName;
     private long created;
+    private LocalDateTime updated;
     private int views;
     private Media media;
     @Version
@@ -31,8 +34,17 @@ public class MediaFile {
     }
 
     @PrePersist
-    public void setTimeStamp(){
+    public void setCreated(){
         created = Calendar.getInstance().getTimeInMillis();
+    }
+
+    @PreUpdate
+    public void setUpdated(){
+        updated = LocalDateTime.now();
+    }
+
+    public LocalDateTime getUpdated(){
+        return updated;
     }
 
     public String getFileName() {
@@ -73,40 +85,40 @@ public class MediaFile {
     }
 
     public static class Builder {
-        private String fileName;
-        private String path;
-        private int views;
-        private Media media;
+        private MediaFile mediaFile = new MediaFile();
 
         public static Builder newInstance(){
             return new Builder();
         }
 
         public Builder setFileName(String fileName) {
-            this.fileName = fileName;
+            this.mediaFile.fileName = fileName;
             return this;
         }
 
         public Builder setMedia(Media media) {
-            this.media = media;
+            this.mediaFile.media = media;
             return this;
         }
 
         public Builder setPath(String path) {
-            this.path = path;
+            this.mediaFile.path = path;
             return this;
         }
 
         public Builder setViews(int views) {
-            this.views = views;
+            this.mediaFile.views = views;
             return this;
         }
 
         public MediaFile build(){
-            return new MediaFile(path, media, views, fileName);
+            MediaFile result = mediaFile;
+            mediaFile = new MediaFile();
+
+            return result;
         }
 
-        public static MediaFile copyWithNewTitle(MediaFile mediaFile, String fileName, String title, String path, Integer number){
+        public static MediaFile copyWithNewTitle(MediaFile mediaFile, String fileName, String title, String path, Integer number, MediaType mediaType){
             if(mediaFile == null)
                 return Builder.newInstance()
                         .setFileName(fileName)
@@ -116,7 +128,7 @@ public class MediaFile {
 
             return Builder.newInstance()
                     .setFileName(fileName)
-                    .setMedia(Media.Builder.copyWithNewTitle(mediaFile.getMedia(), title, number))
+                    .setMedia(Media.Builder.copyWithNewTitleNumberAndType(mediaFile.getMedia(), title, number, mediaType))
                     .setPath(path)
                     .build();
         }
