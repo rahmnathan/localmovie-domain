@@ -39,6 +39,7 @@ public class MediaFile {
     }
 
     @PreUpdate
+    @PrePersist
     public void setUpdated(){
         updated = LocalDateTime.now();
     }
