@@ -2,9 +2,9 @@ package com.github.rahmnathan.localmovie.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.rahmnathan.omdb.data.Media;
-import com.github.rahmnathan.omdb.data.MediaType;
 
 import javax.persistence.*;
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 
@@ -118,21 +118,6 @@ public class MediaFile {
             return result;
         }
 
-        public static MediaFile copyWithNewTitle(MediaFile mediaFile, String fileName, String title, String path, Integer number, MediaType mediaType){
-            if(mediaFile == null)
-                return Builder.newInstance()
-                        .setFileName(fileName)
-                        .setPath(path)
-                        .setMedia(Media.Builder.newInstance().setNumber(number).setTitle(title).build())
-                        .build();
-
-            return Builder.newInstance()
-                    .setFileName(fileName)
-                    .setMedia(Media.Builder.copyWithNewTitleNumberAndType(mediaFile.getMedia(), title, number, mediaType))
-                    .setPath(path)
-                    .build();
-        }
-
         public static MediaFile copyWithNoImage(MediaFile mediaFile){
             if(mediaFile == null)
                 return Builder.newInstance().build();
@@ -143,6 +128,14 @@ public class MediaFile {
                     .setViews(mediaFile.getViews())
                     .setPath(mediaFile.getPath())
                     .build();
+        }
+
+        public static Builder forPath(String path){
+            String fileName = new File(path).getName();
+            return MediaFile.Builder.newInstance()
+                    .setFileName(fileName)
+                    .setPath(path)
+                    .setViews(0);
         }
     }
 }
